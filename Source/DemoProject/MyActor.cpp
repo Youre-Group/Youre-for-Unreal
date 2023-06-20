@@ -32,7 +32,7 @@ void AMyActor::BeginPlay()
 			UE_LOG(LogTemp, Warning, TEXT("Failed! Error: %s"), *FString(error.c_str()));
 			});
 
-		youre.Initialize("1q0rumvlquruqv42eqh1m42fqn", "sso.prepro.youre.id");
+		youre.Initialize("{ENTER YOUR CLIENT ID}", "sso.prepro.youre.id");
 		youre.Authenticate(GetWorld());
 	}
 
