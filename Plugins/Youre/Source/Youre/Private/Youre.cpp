@@ -36,16 +36,22 @@ void FYoureModule::ClearSession()
 }
 
 
-void FYoureModule::Authenticate(UWorld* world)
+void FYoureModule::Authenticate(UWorld* world, bool wasRetry)
 {
 	if (m_isInitialized) {
 		
 		YoureAuth* auth = new YoureAuth(m_apiEndpointUrl, m_clientId);
-		auto onValidAccessToken = [this, auth, world]() {
+		auto onValidAccessToken = [this, auth, world, wasRetry]() {
 			auth->requestUserInfo([this](YoureUserInfo& user) {
 				AuthSucceeded.Broadcast(user);
-				},[this, world]() {
-					Authenticate(world);
+				},[this,auth, world, wasRetry]() {
+					auth->clearTokenCache(); 
+					if (wasRetry) {
+						AuthFailed.Broadcast("AuthError. Something went wrong.");
+					}
+					else {
+						Authenticate(world, true);
+					}
 				});
 		};
 

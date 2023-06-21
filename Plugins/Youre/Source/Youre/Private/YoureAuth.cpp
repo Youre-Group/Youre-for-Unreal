@@ -210,9 +210,6 @@ void YoureAuth::requestUserInfo(const std::function<void(YoureUserInfo&)>& callb
                     requestTokenRefresh([this, callback, errorCallback]() {
                         requestUserInfo(callback, errorCallback);
                         }, errorCallback);
-                        
-                    UE_LOG(LogYoure, Error, TEXT("get userinfo request failed: %s"),*ResponseBody);
-                    errorCallback();
                 }
 
             }

@@ -50,7 +50,7 @@ public:
 
 	void Initialize(const std::string t_clientId, const std::string t_apiEndpointUrl = "");
 	void ClearSession();
-	void Authenticate(UWorld* world);
+	void Authenticate(UWorld* world, bool wasRetry = false);
 
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
