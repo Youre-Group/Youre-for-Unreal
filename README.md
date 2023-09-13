@@ -4,8 +4,12 @@
 
 
 ### Supported Platforms: 
-Desktop
+Windows Desktop
 
+## Install:
+1. Download Release package and unpack
+2. Copy the unpacked _Youre_ directory to _YOUR_PROJECT_PATH/Plugins/_
+3. Restart Unreal Project
 
 
 ## Usage
@@ -30,7 +34,8 @@ if (FYoureModule::IsAvailable())
     UE_LOG(LogTemp, Warning, TEXT("Failed! Error: %s"), *FString(error.c_str()));
     });
 
-  youre.Initialize("{ENTER YOUR CLIENT ID}", "sso.prepro.youre.id");
+  // Client Id and Endpoint URL will provided from YOURE Games
+  youre.Initialize("{ENTER YOUR CLIENT ID}", "{ENTER ENDPOINT URL}");
   youre.Authenticate(GetWorld());
 }
 ```
