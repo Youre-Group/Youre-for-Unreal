@@ -12,7 +12,9 @@ Windows Desktop
 3. Restart Unreal Project
 
 
-## Usage
+
+## Usage 
+You can modify the Login Layer Widget to your needs, you will find it the Content Drawer: _Plugins/YoureContent/WebViewWidgetBlueprint_
 
 ```c++
 
