@@ -33,7 +33,7 @@ if (FYoureModule::IsAvailable())
 
   youre.AuthFailed.Clear();
   youre.AuthFailed.AddLambda([this](FString error) {
-    UE_LOG(LogTemp, Warning, TEXT("Failed! Error: %s"), *FString(error.c_str()));
+    UE_LOG(LogTemp, Warning, TEXT("Failed! Error: %s"), *FString(error));
     });
 
   // Client Id and Endpoint URL will provided from YOURE Games
