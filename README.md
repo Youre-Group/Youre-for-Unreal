@@ -32,7 +32,7 @@ if (FYoureModule::IsAvailable())
     });
 
   youre.AuthFailed.Clear();
-  youre.AuthFailed.AddLambda([this](std::string error) {
+  youre.AuthFailed.AddLambda([this](FString error) {
     UE_LOG(LogTemp, Warning, TEXT("Failed! Error: %s"), *FString(error.c_str()));
     });
 
