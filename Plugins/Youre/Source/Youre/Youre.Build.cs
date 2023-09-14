@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Some copyright should be here...
 
 using UnrealBuildTool;
 
@@ -7,18 +7,19 @@ public class Youre : ModuleRules
 	public Youre(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "HTTP"});
+        
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "HTTP" });
         PublicDependencyModuleNames.AddRange(new string[] { "Json", "JsonUtilities" });
-        PublicDependencyModuleNames.AddRange(new string[] { "WebBrowserWidget", "WebBrowser"  });
+        PublicDependencyModuleNames.AddRange(new string[] { "WebBrowserWidget", "WebBrowser" });
+
         PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
 			}
 			);
-
-
-        PrivateIncludePaths.AddRange(
+				
+		
+		PrivateIncludePaths.AddRange(
 			new string[] {
 				// ... add other private include paths required here ...
 			}

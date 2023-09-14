@@ -9,13 +9,11 @@
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnUrlChangedDelegate, FString);
 
 
-/**
- * 
- */
 UCLASS()
 class YOURE_API UWebViewUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
+	
 
 public:
 
