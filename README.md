@@ -4,11 +4,17 @@
 
 
 ### Supported Platforms: 
-Desktop
+Windows Desktop
+
+## Install:
+1. Download Release package and unpack
+2. Copy the unpacked _Youre_ directory to _YOUR_PROJECT_PATH/Plugins/_
+3. Restart Unreal Project
 
 
 
-## Usage
+## Usage 
+You can modify the Login Layer Widget to your needs, you will find it the Content Drawer: _Plugins/YoureContent/WebViewWidgetBlueprint_
 
 ```c++
 
@@ -26,11 +32,12 @@ if (FYoureModule::IsAvailable())
     });
 
   youre.AuthFailed.Clear();
-  youre.AuthFailed.AddLambda([this](std::string error) {
-    UE_LOG(LogTemp, Warning, TEXT("Failed! Error: %s"), *FString(error.c_str()));
+  youre.AuthFailed.AddLambda([this](FString error) {
+    UE_LOG(LogTemp, Warning, TEXT("Failed! Error: %s"), *FString(error));
     });
 
-  youre.Initialize("{ENTER YOUR CLIENT ID}", "sso.prepro.youre.id");
+  // Client Id and Endpoint URL will provided from YOURE Games
+  youre.Initialize("{ENTER YOUR CLIENT ID}", "{ENTER ENDPOINT URL}");
   youre.Authenticate(GetWorld());
 }
 ```
