@@ -1,20 +1,22 @@
 // Copyright Youre Games, All Rights Reserved.
 
 
-#include "WebViewUserWidget.h"
+#include "WebViewWidget.h"
 #include "Blueprint/UserWidget.h"
 #include <WebBrowser.h>
+DECLARE_EVENT(UWebViewWidget, InternalOnUrlChanged2)
 
-void UWebViewUserWidget::InternalOnUrlChanged(const FText& text)
+
+void UWebViewWidget::InternalOnUrlChanged(const FText& text)
 {
 	FString st = text.ToString();
 	OnUrlChanged.Broadcast(st);
 }
 
-void UWebViewUserWidget::NativeConstruct()
+void UWebViewWidget::NativeConstruct()
 {
-	Super::NativeConstruct();
-	TScriptDelegate delegate;
+	Super::NativeConstruct(); 
+	FScriptDelegate delegate;
 	delegate.BindUFunction(this, TEXT("InternalOnUrlChanged"));
 	WebBrowser->OnUrlChanged.Add(delegate);
 }

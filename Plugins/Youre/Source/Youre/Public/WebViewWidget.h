@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "WebViewUserWidget.generated.h"
+#include "WebViewWidget.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnUrlChangedDelegate, FString);
 
 
 UCLASS()
-class YOURE_API UWebViewUserWidget : public UUserWidget
+class YOURE_API UWebViewWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	

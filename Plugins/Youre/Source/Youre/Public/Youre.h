@@ -12,6 +12,7 @@ public:
 	FString userId;
 	FString userName;
 	FString email;
+	FString accessToken;
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FYoureAuthSuccessDelegate, YoureUserInfo&);
@@ -26,7 +27,8 @@ class YOURE_API FYoureModule : public IModuleInterface
 
 private:
 	FString m_clientId;
-	FString m_apiEndpointUrl = "sso.prepro.oure.id";
+	FString m_apiEndpointUrl;
+	FString m_redirectUrl;
 	bool m_isInitialized;
 
 public:
@@ -45,7 +47,7 @@ public:
 
 
 
-	void Initialize(const FString t_clientId, const FString t_apiEndpointUrl = "");
+	void Initialize(const FString t_clientId, const FString t_apiEndpointUrl, const FString t_redirectUrl);
 	void ClearSession();
 	void Authenticate(UWorld* world, bool wasRetry = false);
 

@@ -17,8 +17,9 @@ typedef unsigned __int64 uint64_t;
 
 class YOURE_API YoureAuth
 {
+
 public:
-	YoureAuth(FString apiEndpointUrl, FString clientId);
+	YoureAuth(FString clientId, FString apiEndpointUrl, FString redirectUrl);
 
 	~YoureAuth();
 	void requestUserInfo(const std::function<void(YoureUserInfo&)>& callback, const std::function<void()>& errorCallback);
@@ -35,7 +36,7 @@ private:
 
 
 	FString m_accessToken;
-
+	FString m_redirectUrl;
 	FString m_apiEndpointUrl;
 	FString m_clientId;
 	FString m_lastGeneratedCodeVerifier;

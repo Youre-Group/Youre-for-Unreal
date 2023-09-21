@@ -4,17 +4,18 @@
 
 
 ### Supported Platforms: 
-Windows Desktop
+Windows Desktop, Android
 
 ## Install:
 1. Download Release package and unpack
 2. Copy the unpacked _Youre_ directory to _YOUR_PROJECT_PATH/Plugins/_
+3. Add **/Youre/Webview** to **Platforms -> Packaging -> Additional Assset Directories to Cook**
 3. Restart Unreal Project
 
 
 
 ## Usage 
-You can modify the Login Layer Widget to your needs, you will find it the Content Drawer: _Plugins/YoureContent/WebViewWidgetBlueprint_
+You can modify the Login Layer Widget to your needs, you will find it the Content Drawer: _Plugins/Youre/Content/WebView/WebView_
 
 ```c++
 
@@ -29,6 +30,7 @@ if (FYoureModule::IsAvailable())
   youre.AuthSucceeded.Clear();
   youre.AuthSucceeded.AddLambda([this](YoureUserInfo user) {
     UE_LOG(LogTemp, Warning, TEXT("Success! YOURE ID: %s"), *user.userId);
+    UE_LOG(LogTemp, Warning, TEXT("Success! YOURE AccessToken: %s"), *user.accessToken);
     });
 
   youre.AuthFailed.Clear();
@@ -36,8 +38,8 @@ if (FYoureModule::IsAvailable())
     UE_LOG(LogTemp, Warning, TEXT("Failed! Error: %s"), *FString(error));
     });
 
-  // Client Id and Endpoint URL will provided from YOURE Games
-  youre.Initialize("{ENTER YOUR CLIENT ID}", "{ENTER ENDPOINT URL}");
+  // Client Id, Endpoint URL, Endpoint URL will provided from YOURE Games
+  youre.Initialize("{ENTER YOUR CLIENT ID}", "https://{ENTER ENDPOINT URL}", "https://{ENTER REDIRECT URL}");
   youre.Authenticate(GetWorld());
 }
 ```

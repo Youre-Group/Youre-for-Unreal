@@ -4,7 +4,8 @@
 #include "Modules/ModuleManager.h"
 #include "YoureAuth.h"
 #include "Blueprint/WidgetTree.h"
-#include "WebViewUserWidget.h"
+#include "WebViewWidget.h"
+#include <GenericPlatform/GenericPlatformHttp.h>
 
 
 
@@ -13,12 +14,11 @@
 DEFINE_LOG_CATEGORY(LogYoure);
 
 
-void FYoureModule::Initialize(const FString clientId, const FString apiEndpointUrl)
+void FYoureModule::Initialize(const FString clientId, const FString apiEndpointUrl, const FString t_redirectUrl)
 {
 	m_clientId = clientId;
-	if (!apiEndpointUrl.IsEmpty()) {
-		m_apiEndpointUrl = apiEndpointUrl;
-	}
+	m_apiEndpointUrl = apiEndpointUrl;
+	m_redirectUrl = FGenericPlatformHttp::UrlEncode(t_redirectUrl);
 	UE_LOG(LogYoure, Log, TEXT("Youre module Initialized"));
 	m_isInitialized = true;
 }
@@ -26,7 +26,7 @@ void FYoureModule::Initialize(const FString clientId, const FString apiEndpointU
 
 void FYoureModule::ClearSession()
 {
-	YoureAuth* auth = new YoureAuth(m_apiEndpointUrl, m_clientId);
+	YoureAuth* auth = new YoureAuth(m_clientId, m_apiEndpointUrl, m_redirectUrl);
 	auth->clearTokenCache();
 	delete auth;
 }
@@ -36,8 +36,7 @@ void FYoureModule::Authenticate(UWorld* world, bool wasRetry)
 {
 	if (m_isInitialized) {
 
-		YoureAuth* auth = new YoureAuth(m_apiEndpointUrl, m_clientId);
-		
+		YoureAuth* auth = new YoureAuth(m_clientId, m_apiEndpointUrl, m_redirectUrl);
 	
 		auto onValidAccessToken = [this, auth, world, wasRetry]() {
 			auth->requestUserInfo([this](YoureUserInfo& user) {
@@ -60,34 +59,29 @@ void FYoureModule::Authenticate(UWorld* world, bool wasRetry)
 
 		if (!auth->isAuthenticated()) {
 
-			FSoftClassPath WidgetClassRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Youre/WebViewWidgetBlueprint.WebViewWidgetBlueprint_C'"));
-			if (UClass* WidgetClass = WidgetClassRef.TryLoadClass<UWebViewUserWidget>())
-			{
-				UWebViewUserWidget* Widget = CreateWidget<UWebViewUserWidget>(world->GetGameInstance(), WidgetClass);
-				Widget->AddToViewport();
+			FString WidgetClassName = TEXT("/Youre/WebView/WebView.WebView_C"); 
+			TSubclassOf<UUserWidget> WidgetClass = LoadClass<UUserWidget>(nullptr, *WidgetClassName);
+			UWebViewWidget* Widget = CreateWidget<UWebViewWidget>(world->GetGameInstance(), WidgetClass);
+			Widget->AddToViewport();
 
-				FVector2D Alignment;
-				Alignment.X = 0.5;
-				Alignment.Y = 0.5;
-				Widget->SetAlignmentInViewport(Alignment);
+			FVector2D Alignment;
+			Alignment.X = 0.5;
+			Alignment.Y = 0.5;
+			Widget->SetAlignmentInViewport(Alignment);
 		
-				Widget->OnUrlChanged.AddLambda([auth, onValidAccessToken, onAuthError, Widget](FString str) {
-
-
-					if (str.StartsWith("unity:oauth")) {
-						TArray<FString> resultArray;
-						str.ParseIntoArray(resultArray, TEXT("code="), true);
-						if (resultArray.IsValidIndex(1)) {
-							Widget->RemoveFromParent();
-							auth->requestAccessToken(*resultArray[1], onValidAccessToken, onAuthError);
-						}
+			Widget->OnUrlChanged.AddLambda([auth, onValidAccessToken, onAuthError, Widget](FString str) {
+				if (str.Contains("?code=")) {
+					TArray<FString> resultArray;
+					str.ParseIntoArray(resultArray, TEXT("?code="), true);
+					if (resultArray.IsValidIndex(1)) {
+						Widget->RemoveFromParent();
+						auth->requestAccessToken(*resultArray[1], onValidAccessToken, onAuthError);
 					}
-					});
+				}
+				});
 
-				FString loginUrl = auth->getLoginUrl();
-			
-				Widget->WebBrowser->LoadURL(loginUrl);
-			}
+			FString loginUrl = auth->getLoginUrl();
+			Widget->WebBrowser->LoadURL(loginUrl);
 		}
 		else {
 			onValidAccessToken();
@@ -105,15 +99,10 @@ void FYoureModule::Authenticate(UWorld* world, bool wasRetry)
 void FYoureModule::StartupModule()
 {
 	UE_LOG(LogYoure, Log, TEXT("Youre module started"));
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-	
 }
 
 void FYoureModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
-	
 }
 
 #undef LOCTEXT_NAMESPACE

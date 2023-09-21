@@ -12,10 +12,12 @@ static const char* const BASE64_DIGITS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkl
 static const char BASE64_PADDING = '=';
 
 
-YoureAuth::YoureAuth (FString apiEndpointUrl, FString clientId)
+YoureAuth::YoureAuth (FString clientId, FString apiEndpointUrl,  FString redirectUrl)
 {
     m_clientId = clientId;
     m_apiEndpointUrl = apiEndpointUrl;
+    m_redirectUrl = redirectUrl;
+
 
 }
 YoureAuth::~YoureAuth()
@@ -33,9 +35,9 @@ FString YoureAuth::getLoginUrl()
 
     m_lastGeneratedCodeVerifier = FString(code_verifier.c_str());
 
-    FString url = "https://"+ m_apiEndpointUrl + "/authorize?";
+    FString url = m_apiEndpointUrl + "/authorize?";
     url += "client_id=" + m_clientId;
-    url += "&redirect_uri=unity:oauth";
+    url += "&redirect_uri="+m_redirectUrl;
     url += "&response_type=code";
     url += "&token_endpoint_auth_method=none";
     url += "&scope=openid email profile";
@@ -82,7 +84,7 @@ void YoureAuth::requestUserInfo(const std::function<void(YoureUserInfo&)>& callb
 
     TSharedRef<IHttpRequest> Request = FHttpModule::Get().CreateRequest();
     Request->SetVerb("GET");
-    Request->SetURL("https://" + m_apiEndpointUrl + "/oauth2/userInfo");
+    Request->SetURL(m_apiEndpointUrl + "/oauth2/userInfo");
     Request->SetHeader("Authorization", "Bearer "+m_accessToken);
 
     auto CreateDelegate = [this, callback, errorCallback] (FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful) {
@@ -101,6 +103,8 @@ void YoureAuth::requestUserInfo(const std::function<void(YoureUserInfo&)>& callb
                     sub.RemoveFromStart("auth0|");
                     YoureUserInfo data;
                     data.userId = sub;
+                    data.accessToken = m_accessToken;
+
                     if (JsonObject->HasTypedField<EJson::String>(TEXT("username"))) {
                         data.userName = JsonObject->GetStringField(TEXT("username"));
                     }
@@ -155,14 +159,15 @@ void YoureAuth::requestAccessToken(FString code, const std::function<void()>& ca
 {
     TSharedRef<IHttpRequest> Request = FHttpModule::Get().CreateRequest();
    
-    Request->SetURL("https://" + m_apiEndpointUrl + "/oauth/token");
+    Request->SetURL(m_apiEndpointUrl + "/oauth/token");
     Request->SetVerb("POST");
     Request->SetHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    FString PostData = FString::Printf(TEXT("client_id=%s&grant_type=authorization_code&code_verifier=%s&code=%s&redirect_uri=unity:oauth&token_endpoint_auth_method=none"),
+    FString PostData = FString::Printf(TEXT("client_id=%s&grant_type=authorization_code&code_verifier=%s&code=%s&redirect_uri=%s&token_endpoint_auth_method=none"),
         *m_clientId,
         *m_lastGeneratedCodeVerifier,
-        *code);
+        *code,
+        *m_redirectUrl);
     Request->SetContentAsString(PostData);
 
     auto CreateDelegate = [this,callback, errorCallback](FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful) {

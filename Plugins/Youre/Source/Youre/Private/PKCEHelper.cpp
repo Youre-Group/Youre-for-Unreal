@@ -108,7 +108,8 @@ unsigned int HexToDec(std::string hexInput)
             default: {
 
                 std::string msg("is not in hex format");
-                throw std::logic_error(msg); };
+                //throw std::logic_error(msg); 
+            };
             }
         }
 
