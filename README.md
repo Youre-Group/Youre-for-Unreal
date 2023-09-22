@@ -5,12 +5,13 @@
 Compatible with engine version **5.0.3** and higher.
 
 ### Supported Platforms: 
-Windows Desktop, Android
+Windows Desktop, Android, iOS
 
 ## Install:
 1. Download Release package and unpack
 2. Copy the unpacked _Youre_ directory to _YOUR_PROJECT_PATH/Plugins/_
-3. Add **/Youre/Webview** to **Platforms -> Packaging -> Additional Assset Directories to Cook**
+3. Add **"/Youre/Webview"** to **Platforms -> Packaging -> Additional Assset Directories to Cook**
+4. Add **"Youre"** to your public dependencies in SomeModuleName.Build.cs file
 3. Restart Unreal Project
 
 
@@ -20,6 +21,7 @@ You can modify the Login Layer Widget to your needs, you will find it the Conten
 
 ```c++
 
+.........
 #include "Youre.h"
 #include "Engine/World.h"
 .........
