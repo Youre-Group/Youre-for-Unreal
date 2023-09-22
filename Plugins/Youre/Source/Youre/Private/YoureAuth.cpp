@@ -40,7 +40,7 @@ FString YoureAuth::getLoginUrl()
     url += "&redirect_uri="+m_redirectUrl;
     url += "&response_type=code";
     url += "&token_endpoint_auth_method=none";
-    url += "&scope=openid email profile";
+    url += "&scope=openid%20email%20profile";
     url += "&code_challenge_method=S256";
     url += "&code_challenge=" + FString(challenge64.c_str());
     
